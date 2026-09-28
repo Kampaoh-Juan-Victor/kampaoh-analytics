@@ -1,0 +1,1039 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Kampaoh Analytics</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --bg: #f2f5f1;
+  --surface: #ffffff;
+  --surface2: #edf1ec;
+  --text: #1b2d1e;
+  --muted: #697b6c;
+  --border: #d4ddd5;
+  --accent: #16a34a;
+  --blue: #2563eb;
+  --cyan: #0891b2;
+  --slate: #475569;
+  --purple: #7c3aed;
+  --red: #dc2626;
+  --amber: #b45309;
+  --teal: #0d9488;
+  --tab-active-bg: #1b2d1e;
+  --tab-active-text: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1a0f;
+    --surface: #162418;
+    --surface2: #1e3023;
+    --text: #e0ebe1;
+    --muted: #8fa292;
+    --border: #2a3c2c;
+    --tab-active-bg: #34d399;
+    --tab-active-text: #0d1a0f;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1a0f;
+  --surface: #162418;
+  --surface2: #1e3023;
+  --text: #e0ebe1;
+  --muted: #8fa292;
+  --border: #2a3c2c;
+  --tab-active-bg: #34d399;
+  --tab-active-text: #0d1a0f;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding-inline: 16px;
+  padding-block: 0;
+}
+h1,h2,h3 { text-wrap: balance; margin: 0; }
+.app { max-width: 940px; margin: 0 auto; padding-block: 24px 48px; }
+
+/* Header */
+.header { margin-bottom: 24px; }
+.header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+.header .sub { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+.tab-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 8px 14px; border-radius: 6px 6px 0 0;
+  font: inherit; font-size: 0.83rem; font-weight: 500;
+  color: var(--muted); transition: color .15s, background .15s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--text); background: var(--surface2); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: none; }
+
+/* Panels */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Stat tiles */
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+.tile .label { font-size: 0.75rem; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.tile .value { font-size: 1.65rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 4px; line-height: 1; }
+.tile .sub { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+.tile.accent .value { color: var(--accent); }
+.tile.blue .value { color: var(--blue); }
+.tile.purple .value { color: var(--purple); }
+.tile.cyan .value { color: var(--cyan); }
+
+/* Charts */
+.chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.chart-wrap h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.chart-container { position: relative; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* Table */
+.tbl-wrap { overflow-x: auto; margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+th { text-align: left; padding: 8px 12px; background: var(--surface2); font-weight: 600; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--border); }
+td { padding: 8px 12px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+.bg-surface { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+
+/* Tags */
+.tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+.tag.brand { background: #dcfce7; color: #15803d; }
+.tag.nobrand { background: #e0f2fe; color: #0369a1; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tag.brand { background: #14532d; color: #86efac; } :root:not([data-theme="light"]) .tag.nobrand { background: #0c4a6e; color: #7dd3fc; } }
+:root[data-theme="dark"] .tag.brand { background: #14532d; color: #86efac; }
+:root[data-theme="dark"] .tag.nobrand { background: #0c4a6e; color: #7dd3fc; }
+
+/* Note box */
+.note { background: var(--surface2); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 0.82rem; color: var(--muted); margin-bottom: 16px; }
+.note strong { color: var(--text); }
+
+/* Period toggle */
+.period-toggle { display: flex; gap: 4px; margin-bottom: 16px; }
+.period-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); font: inherit; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: all .15s; }
+.period-btn:hover { border-color: var(--accent); color: var(--accent); }
+.period-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.period-btn.active:hover { background: var(--accent); color: #fff; }
+.period-warn { font-size: 0.75rem; color: var(--amber); margin-left: 8px; align-self: center; }
+
+/* Funnel */
+.funnel { display: flex; flex-direction: column; gap: 8px; }
+.funnel-step { display: grid; grid-template-columns: 130px 1fr auto; gap: 12px; align-items: center; }
+.funnel-label { font-size: 0.82rem; font-weight: 500; }
+.funnel-bar-wrap { background: var(--surface2); border-radius: 4px; height: 22px; overflow: hidden; }
+.funnel-bar { height: 100%; border-radius: 4px; background: var(--accent); transition: width .4s; }
+.funnel-val { font-size: 0.82rem; font-variant-numeric: tabular-nums; color: var(--muted); min-width: 60px; text-align: right; }
+
+/* AI cards */
+.ai-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.ai-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.ai-card .src { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+.ai-card .num { font-size: 1.8rem; font-weight: 700; color: var(--purple); font-variant-numeric: tabular-nums; }
+.ai-card .rev { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+
+/* Doc panels */
+.doc-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+.doc-panel summary { padding: 10px 16px; font-size: 0.82rem; font-weight: 600; color: var(--muted); cursor: pointer; list-style: none; display: flex; align-items: center; gap: 6px; user-select: none; }
+.doc-panel summary::-webkit-details-marker { display: none; }
+.doc-panel summary::before { content: '▶'; font-size: 0.65rem; transition: transform .2s; }
+.doc-panel[open] summary::before { transform: rotate(90deg); }
+.doc-panel summary:hover { color: var(--text); background: var(--surface2); }
+.doc-body { padding: 12px 16px 16px; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border); }
+.doc-row { display: grid; grid-template-columns: 110px 1fr; gap: 8px; font-size: 0.8rem; line-height: 1.5; }
+.doc-key { font-weight: 600; color: var(--muted); padding-top: 1px; }
+.doc-body code { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; font-size: 0.75rem; font-family: ui-monospace, monospace; }
+.doc-body .doc-warn { color: var(--amber); font-weight: 500; }
+.doc-body .doc-ok { color: var(--accent); font-weight: 500; }
+</style>
+
+<div class="app">
+  <div class="header">
+    <h1>Kampaoh · Analítica Digital</h1>
+    <div class="sub">Datos disponibles a 25 sep 2026 · Atribución desde abr 2026 · GSC desde may 2025</div>
+  </div>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="trafico">1 · Tráfico por canal</button>
+    <button class="tab-btn" data-tab="atribucion">2 · Atribución reservas</button>
+    <button class="tab-btn" data-tab="marca">3 · GAds: Marca sin marca</button>
+    <button class="tab-btn" data-tab="gsc">4 · GSC: Búsquedas de marca</button>
+    <button class="tab-btn" data-tab="ia">5 · Herramientas IA</button>
+  </nav>
+
+  <!-- TAB 1: Tráfico por canal -->
+  <div class="tab-panel active" id="tab-trafico">
+    <div class="note">Sesiones en <strong>es.kampaoh.com</strong> · FY25-26 vs FY24-25 · Meta y TikTok identificados por source.<br>
+    <strong>Excluidas:</strong> <code>/blog/</code> · <code>/guias-de-viaje/</code> · <code>/campings-toboganes/</code> · <code>/campings-niños/</code> · <code>/campings-playa/</code> · <code>/campings-piscina/</code> · <code>/campings-con-piscina-climatizada/</code> — estas páginas son estrategia de <strong>captación de tráfico no marca</strong> (SEO genérico) y se reportan por separado.</div>
+    <details class="doc-panel">
+      <summary>ℹ Metodología · Tráfico por canal</summary>
+      <div class="doc-body">
+        <div class="doc-row"><span class="doc-key">Fuente</span><span>GA4 Data API · Propiedad <code>347358752</code> · script <code>ga4-refresh.js</code> → <code>ga4-data.json</code></span></div>
+        <div class="doc-row"><span class="doc-key">Sitio</span><span><strong>es.kampaoh.com</strong> (filtro por hostname en GA4; excluye booking.kampaoh.com que tiene su propio informe en Tab 2)</span></div>
+        <div class="doc-row"><span class="doc-key">Dimensión</span><span><code>sessionDefaultChannelGroup</code> (agrupación de canal de la sesión asignada por GA4) + <code>yearMonth</code></span></div>
+        <div class="doc-row"><span class="doc-key">Métrica</span><span><code>sessions</code> — una sesión = visita con mínimo 1 evento registrado</span></div>
+        <div class="doc-row"><span class="doc-key">Período</span><span>Comparativa FY24-25 (oct 2024–sep 2025) vs FY25-26 (oct 2025–sep 2026) mes a mes</span></div>
+        <div class="doc-row"><span class="doc-key">Canales</span><span><code>Paid Social</code> = Meta Ads · <code>Cross-network</code> = campañas PMax de Google · <code>Unassigned</code> = sesiones sin UTM ni referrer reconocible por GA4 · Meta/TikTok distinguidos internamente por <code>sessionSource</code></span></div>
+        <div class="doc-row"><span class="doc-key">Excluidas</span><span>7 rutas de SEO genérico (blog, guías de viaje, campings-*) que forman una estrategia de captación de tráfico no-marca separada y distorsionarían el canal "Organic Search"</span></div>
+        <div class="doc-row"><span class="doc-key">Limitación</span><span class="doc-warn">AI Assistant (ChatGPT, Gemini) no aparece como canal separado en GA4 sesiones hasta junio 2026 — antes queda agrupado en "Referral" o "Unassigned"</span></div>
+      </div>
+    </details>
+    <div class="tiles" id="tiles-trafico"></div>
+    <div class="chart-wrap">
+      <h3>Sesiones por canal · 2026 mensual</h3>
+      <div class="chart-container" style="height:280px"><canvas id="chart-trafico"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <h3>Sesiones y usuarios únicos · FY25-26 vs FY24-25</h3>
+      <div class="chart-container" style="height:200px"><canvas id="chart-trafico-yoy"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <h3>Detalle por canal × mes · FY25-26 (oct 25–sep 26)</h3>
+      <div class="tbl-wrap" id="tbl-trafico-detail"></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: Atribución -->
+  <div class="tab-panel" id="tab-atribucion">
+    <div class="note">
+      <strong>Atribución GA4 · booking.kampaoh.com</strong><br>
+      <strong>First-Touch</strong>: primer canal del usuario · may–sep 2026 (inicio tracking booking). <strong>Last-Click</strong>: sesión con UTMs que cerró la reserva · ago–sep 2026 (desde implementación UTMs).
+    </div>
+    <details class="doc-panel">
+      <summary>ℹ Metodología · Atribución reservas</summary>
+      <div class="doc-body">
+        <div class="doc-row"><span class="doc-key">Fuente GA4</span><span>GA4 Data API · Propiedad <code>347358752</code> · script <code>atribucion-refresh.js</code> → <code>atribucion-data.json</code></span></div>
+        <div class="doc-row"><span class="doc-key">Sitio</span><span><strong>booking.kampaoh.com</strong> — motor de reservas; filtro GA4: <code>hostname EXACT_MATCH booking.kampaoh.com</code></span></div>
+        <div class="doc-row"><span class="doc-key">First-Touch</span><span>Dimensión <code>firstUserDefaultChannelGroup</code> + <code>firstUserSource</code> — canal que trajo al usuario al sitio por primera vez (toda la historia del usuario en GA4). Mejor para valorar Meta, TikTok y otros canales de descubrimiento.</span></div>
+        <div class="doc-row"><span class="doc-key">Last-Click</span><span>Dimensión <code>sessionDefaultChannelGrouping</code> + <code>sessionSource</code> — sesión específica que generó la compra. Favorece búsqueda orgánica y directa porque el usuario vuelve por nombre.</span></div>
+        <div class="doc-row"><span class="doc-key">Métricas GA4</span><span><code>ecommercePurchases</code> (compras) · <code>purchaseRevenue</code> (ingresos en €) · <code>sessions</code> para tasa de conversión</span></div>
+        <div class="doc-row"><span class="doc-key">Período</span><span><strong>Jul–Sep 2026</strong> — UTMs de pago activos desde el 20 jul 2026. Mayo–Jun disponibles pero sin UTMs: Meta/Google aparecen infravalorados en Last-Click.</span></div>
+        <div class="doc-row"><span class="doc-key">UTMs</span><span class="doc-warn">UTMs de pago activos solo desde el <strong>20 julio 2026</strong>. Antes de esa fecha, Meta/Google aparecen infravalorados en Last-Click (la sesión de la compra no tenía UTM y GA4 la asigna a "Direct" o "Organic").</span></div>
+        <div class="doc-row"><span class="doc-key">Meta self-report</span><span>Script <code>meta-purchase-value.js</code> → Meta Marketing API v21 · endpoint <code>act_{id}/insights</code> · campo <code>action_values</code> con tipo <code>offsite_conversion.fb_pixel_purchase</code> · ventana <code>7d_click + 1d_view</code></span></div>
+        <div class="doc-row"><span class="doc-key">Google self-report</span><span>Google Ads API · <code>gads-data.json</code> · métrica <code>conversions_value</code> · solo conversiones de tipo "reserva" (goal action configurada en Google Ads) · período mayo–sep 2026 (abril excluido)</span></div>
+        <div class="doc-row"><span class="doc-key">TikTok self-report</span><span class="doc-warn">Tracking de conversiones no configurado en TikTok Ads — pendiente de implementar el pixel de conversión. Por eso aparece N/D en la columna self-report. Las sesiones de TikTok sí llegan a GA4 (tráfico identificado por utm_source=tiktok), pero TikTok no reporta reservas propias.</span></div>
+        <div class="doc-row"><span class="doc-key">Ratio self/GA4</span><span>Compara valor de conversión reportado por la plataforma (€) vs ingresos atribuidos por GA4 First-Touch (€). Un ratio &gt;1× significa que la plataforma se atribuye más ingresos de los que GA4 registra para ese canal.</span></div>
+      </div>
+    </details>
+    <div class="period-toggle" id="atr-model-toggle" style="flex-wrap:wrap;align-items:center">
+      <button class="period-btn" data-model="ft">First-Touch <span style="opacity:.7;font-size:.72rem">(primer canal)</span></button>
+      <button class="period-btn active" data-model="lc">Last-Click <span style="opacity:.7;font-size:.72rem">(sesión compra)</span></button>
+      <span id="atr-lc-warn" style="font-size:0.78rem;color:var(--muted);margin-left:6px" id="atr-period-note">FT: may–sep 2026 · LC: ago–sep 2026</span>
+    </div>
+    <div class="two-col">
+      <div class="chart-wrap" style="margin:0">
+        <h3>Distribución de compras</h3>
+        <div class="chart-container" style="height:240px"><canvas id="chart-atr-donut"></canvas></div>
+      </div>
+      <div class="chart-wrap" style="margin:0">
+        <h3>Ingresos atribuidos</h3>
+        <div class="chart-container" style="height:240px"><canvas id="chart-atr-rev"></canvas></div>
+      </div>
+    </div>
+    <div class="tbl-wrap bg-surface" style="margin-top:16px">
+      <table id="tbl-atr"></table>
+    </div>
+
+    <!-- Comparativa GA4 vs plataformas -->
+    <div class="chart-wrap" style="margin-top:24px">
+      <h3>GA4 vs Auto-atribución de plataforma · May–Sep 2026</h3>
+      <div class="note" style="margin-bottom:12px">
+        <strong>GA4 First-Touch / Last-Click</strong>: reservas que <em>nuestra</em> analítica web atribuye a cada canal. No incluye view-through ni ventanas extendidas — solo sesiones registradas en el navegador.<br>
+        <strong>Self-report (plataforma)</strong>: lo que cada herramienta declara haber generado en su propio panel. Meta usa 7d-click + 1d-view. Google Ads su pixel de conversión. TikTok: <strong>tracking de conversiones pendiente de configurar</strong> — los datos de TikTok en GA4 son sesiones (tráfico), no conversiones reportadas por TikTok.<br>
+        <span style="color:var(--muted)">La suma de self-reports suele superar el 100% de ventas reales porque cada plataforma se atribuye conversiones en las que participó, sin deduplicar entre ellas.</span>
+      </div>
+      <div class="tbl-wrap" id="tbl-platform-compare"></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Marca vs Sin Marca -->
+  <div class="tab-panel" id="tab-marca">
+    <div class="note">Inversión en Google Ads · FY 25-26 (oct 2025 – sep 2026) · <strong>€121.8k total</strong>. Con Marca = solo campañas de Search con "_Marca" en el nombre (<code>ES_Conversiones_Search_LPKs_Marca_New</code> + <code>PT_Conversiones_Search_LPKs_Marca</code>). Otros = PMax + Demand Gen + Vídeo/Alcance.</div>
+    <details class="doc-panel">
+      <summary>ℹ Metodología · Marca vs Sin Marca</summary>
+      <div class="doc-body">
+        <div class="doc-row"><span class="doc-key">Fuente</span><span>Google Ads API · script <code>google-ads-refresh.js</code> → <code>gads-data.json</code></span></div>
+        <div class="doc-row"><span class="doc-key">Clasificación</span><span>Basada en el <strong>nombre de campaña</strong> extraído de la API de Google Ads — prioridad en orden:<br>1. Nombre contiene <code>No_Marca</code> / <code>No Brand</code> → <span style="color:var(--blue);font-weight:500">Sin Marca</span><br>2. Nombre contiene <code>_Marca</code> (sin "No") → <span class="doc-ok">Con Marca</span> (solo Search de marca)<br>3. Nombre contiene PMax / Demand Gen / Vídeo / Alcance / YouTube / Shopping → Otros<br>4. Resto de Search → Sin Marca</span></div>
+        <div class="doc-row"><span class="doc-key">Campañas marca</span><span>Solo 2 campañas: <code>ES_Conversiones_Search_LPKs_Marca_New</code> (ES) · <code>PT_Conversiones_Search_LPKs_Marca</code> (PT) · Total FY25-26: <strong>€8.863</strong></span></div>
+        <div class="doc-row"><span class="doc-key">Métricas</span><span><code>cost</code> (inversión en €) · <code>conversions</code> (reservas completadas según objetivo configurado en Google Ads)</span></div>
+        <div class="doc-row"><span class="doc-key">Período</span><span><strong>FY25-26</strong> (oct 2025–sep 2026) · Total €121.012. Gráfico de conversiones extiende desde may 2025 para mostrar estacionalidad.</span></div>
+        <div class="doc-row"><span class="doc-key">Eje conversiones</span><span>Los datos de conversiones del gráfico inferior provienen de <code>gads-data.json</code> campo <code>conversions</code> — cuenta las conversiones de Google Ads (goal: reserva), no las de GA4. Pueden diferir del Tab 2 porque GA4 atribuye al primer canal o última sesión, Google Ads usa su ventana de atribución propia.</span></div>
+        <div class="doc-row"><span class="doc-key">Limitación</span><span class="doc-warn">La clasificación marca/no-marca depende 100% de la nomenclatura de campaña. Si se crea una campaña de marca sin seguir la convención de nombre, se clasificaría como "Sin Marca" y viceversa.</span></div>
+      </div>
+    </details>
+    <div class="tiles" id="tiles-marca"></div>
+    <div class="two-col">
+      <div class="chart-wrap" style="margin:0">
+        <h3>Inversión mensual FY25-26</h3>
+        <div class="chart-container" style="height:240px"><canvas id="chart-brand-bar"></canvas></div>
+      </div>
+      <div class="chart-wrap" style="margin:0">
+        <h3>Distribución total</h3>
+        <div class="chart-container" style="height:240px"><canvas id="chart-brand-donut"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <h3>Desglose mensual por tipo de campaña · FY25-26</h3>
+      <div class="chart-container" style="height:260px"><canvas id="chart-brand-detail"></canvas></div>
+      <div class="tbl-wrap" id="tbl-brand-detail" style="margin-top:16px"></div>
+    </div>
+  </div>
+
+  <!-- TAB 4: GSC Búsquedas de marca -->
+  <div class="tab-panel" id="tab-gsc">
+    <div class="note" style="border-color:var(--accent)">
+      <strong>Búsquedas de marca únicamente</strong> · keywords: <strong>kampaoh</strong> · kampao · kampoah · kampaho (variantes ortográficas) + combinaciones con destino (ej. "kampaoh tarifa"). El gráfico muestra el total de marca y permite ver la evolución individual de cada keyword.
+    </div>
+    <details class="doc-panel">
+      <summary>ℹ Metodología · Búsquedas de marca (GSC)</summary>
+      <div class="doc-body">
+        <div class="doc-row"><span class="doc-key">Fuente</span><span>Google Search Console API · script <code>gsc-marca-refresh.js</code> → <code>gsc-marca-bymonth.json</code></span></div>
+        <div class="doc-row"><span class="doc-key">Propiedad</span><span><code>https://es.kampaoh.com/</code> · endpoint <code>searchAnalytics/query</code></span></div>
+        <div class="doc-row"><span class="doc-key">Filtro</span><span>4 peticiones a la API con <code>dimensionFilterGroups: query CONTAINS [kampaoh|kampao|kampoah|kampaho]</code> — los resultados se deduplicaron por <code>date+query</code> para evitar doble conteo de queries que contienen más de un término</span></div>
+        <div class="doc-row"><span class="doc-key">Dimensiones</span><span><code>date</code> + <code>query</code> → agrupados por mes en este informe</span></div>
+        <div class="doc-row"><span class="doc-key">Métricas</span><span><code>clicks</code> · <code>impressions</code> · Los datos de CTR y posición son del top queries de los últimos 90 días (ventana con más datos disponibles)</span></div>
+        <div class="doc-row"><span class="doc-key">Período</span><span><strong>FY25-26: Oct 2025 – Sep 2026</strong> · GSC disponible desde mayo 2025; datos oct 2024–abr 2025 no recuperables sin fetch previo</span></div>
+        <div class="doc-row"><span class="doc-key">Clasificación</span><span>Cada keyword se agrupa en su término base: "kampaoh las arenas" → kampaoh; "camping kampaho" → kampaho. El 94% de los clicks de marca van a variantes de "kampaoh".</span></div>
+        <div class="doc-row"><span class="doc-key">CTR 71%</span><span class="doc-ok">Cuando alguien busca exactamente "kampaoh" en Google, 7 de cada 10 hacen clic en el resultado orgánico. Refleja alta reconocibilidad de marca. Posición media 1.3.</span></div>
+      </div>
+    </details>
+    <div class="tiles" id="tiles-gsc"></div>
+    <div class="chart-wrap">
+      <h3>Clicks de marca mensuales · May 25–Sep 26</h3>
+      <div class="chart-container" style="height:260px"><canvas id="chart-gsc"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <h3>Top queries de marca · últimos 90 días</h3>
+      <div class="tbl-wrap">
+        <table id="tbl-queries"></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 5: IA -->
+  <div class="tab-panel" id="tab-ia">
+    <div class="note">Reservas procedentes de herramientas de IA (ChatGPT, Gemini, Copilot) · Datos de atribución abr–sep 2026.</div>
+    <details class="doc-panel">
+      <summary>ℹ Metodología · Herramientas IA</summary>
+      <div class="doc-body">
+        <div class="doc-row"><span class="doc-key">Fuente</span><span>GA4 Data API · misma extracción que Tab 2 (<code>atribucion-refresh.js</code> → <code>atribucion-data.json</code>)</span></div>
+        <div class="doc-row"><span class="doc-key">Sitio</span><span><strong>booking.kampaoh.com</strong> — solo conversiones en el motor de reservas (igual que Tab 2)</span></div>
+        <div class="doc-row"><span class="doc-key">Identificación</span><span>Sesiones donde <code>firstUserSource</code> o <code>sessionSource</code> pertenece a un dominio de IA conocido:<br>• <code>chatgpt.com</code> (search, ai-assistant, referral, not-set)<br>• <code>gemini.google.com</code> (ai-assistant, referral)<br>• <code>copilot.com</code> (ai-assistant, referral)</span></div>
+        <div class="doc-row"><span class="doc-key">Métricas</span><span><code>ecommercePurchases</code> (reservas) · <code>purchaseRevenue</code> (ingresos en €) agrupados por source/medium y por mes</span></div>
+        <div class="doc-row"><span class="doc-key">Período</span><span><strong>Abril–Sep 2026</strong> — antes de abril no había tráfico IA detectable en booking.kampaoh.com</span></div>
+        <div class="doc-row"><span class="doc-key">Limitación</span><span class="doc-warn">GA4 solo registra el referrer de IA cuando el usuario llega directamente desde la herramienta. Si el usuario busca en ChatGPT, cierra, y luego vuelve días después por Google, la conversión se atribuye a Google, no a ChatGPT.</span></div>
+        <div class="doc-row"><span class="doc-key">Contexto</span><span class="doc-ok">Canal emergente: 225 reservas y €52k en ingresos en 6 meses. Crecimiento acelerado jun→jul 2026 (+89%). ChatGPT acapara ~90% del volumen de IA. Cifras pequeñas pero tendencia relevante para seguir.</span></div>
+      </div>
+    </details>
+    <div class="tiles" id="tiles-ia"></div>
+    <div class="ai-grid" id="ai-grid"></div>
+    <div class="chart-wrap">
+      <h3>Evolución mensual · reservas vía IA</h3>
+      <div class="chart-container" style="height:200px"><canvas id="chart-ia"></canvas></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const DATA = {
+  // Atribución GA4 booking.kampaoh.com · May–Sep 2026
+  // atrFT = First-Touch (qué canal adquirió al usuario por primera vez)
+  // atrLC = Last-Click (sesión que generó la compra)
+  atrFT: {"Google Orgánico":{"202605":{"p":1391,"r":338217},"202606":{"p":5311,"r":1407390},"202607":{"p":5668,"r":1606567},"202608":{"p":3356,"r":824466},"202609":{"p":1052,"r":137083}},"Directo":{"202605":{"p":729,"r":188261},"202606":{"p":2578,"r":670664},"202607":{"p":2603,"r":723894},"202608":{"p":1213,"r":290810},"202609":{"p":432,"r":52678}},"Google Ads":{"202605":{"p":765,"r":185545},"202606":{"p":3813,"r":979882},"202607":{"p":4501,"r":1229667},"202608":{"p":3141,"r":739964},"202609":{"p":862,"r":111885}},"Google My Business":{"202605":{"p":335,"r":82517},"202606":{"p":1067,"r":280585},"202607":{"p":1464,"r":383759},"202608":{"p":1040,"r":248505},"202609":{"p":370,"r":48472}},"Otros":{"202605":{"p":129,"r":36151},"202606":{"p":421,"r":97057},"202607":{"p":505,"r":131641},"202608":{"p":339,"r":74873},"202609":{"p":107,"r":13328}},"Email":{"202605":{"p":30,"r":7262},"202606":{"p":110,"r":33737},"202607":{"p":100,"r":27770},"202608":{"p":59,"r":15383},"202609":{"p":19,"r":2406}},"Meta Ads":{"202605":{"p":57,"r":12128},"202606":{"p":258,"r":67565},"202607":{"p":360,"r":107448},"202608":{"p":366,"r":89136},"202609":{"p":59,"r":8382}},"Referral/Social":{"202605":{"p":58,"r":19576},"202606":{"p":232,"r":66256},"202607":{"p":278,"r":77154},"202608":{"p":219,"r":50688},"202609":{"p":73,"r":11240}},"TikTok Ads":{"202605":{"p":10,"r":1846},"202606":{"p":31,"r":9291},"202607":{"p":37,"r":14185},"202608":{"p":25,"r":6675},"202609":{"p":3,"r":299}},"IA (ChatGPT/Gemini)":{"202606":{"p":11,"r":3073},"202607":{"p":34,"r":9554},"202608":{"p":31,"r":6192},"202609":{"p":11,"r":1746}}},
+  atrLC: {"Google Ads":{"202608":{"p":3748,"r":886330},"202609":{"p":1024,"r":131194}},"Google Orgánico":{"202608":{"p":3533,"r":858638},"202609":{"p":1097,"r":142331}},"Google My Business":{"202608":{"p":1040,"r":248505},"202609":{"p":370,"r":48472}},"Directo":{"202608":{"p":781,"r":191154},"202609":{"p":293,"r":35355}},"Meta Ads":{"202608":{"p":260,"r":65048},"202609":{"p":45,"r":6582}},"Otros":{"202608":{"p":110,"r":24458},"202609":{"p":62,"r":8266}},"Email":{"202608":{"p":38,"r":9850},"202609":{"p":11,"r":1804}},"Referral/Social":{"202608":{"p":232,"r":51057},"202609":{"p":72,"r":11604}},"IA (ChatGPT/Gemini)":{"202608":{"p":22,"r":4977},"202609":{"p":11,"r":1612}},"TikTok Ads":{"202608":{"p":25,"r":6675},"202609":{"p":3,"r":299}}},
+  // Sesiones booking.kampaoh.com por canal (misma agrupación que atrFT/atrLC · May–Sep 2026)
+  bookingSess: {"Google Orgánico":{"total":520376,"byMonth":{"202605":39074,"202606":148857,"202607":177819,"202608":120333,"202609":34293}},"Google Ads":{"total":422952,"byMonth":{"202605":24465,"202606":108139,"202607":140942,"202608":118587,"202609":30819}},"Meta Ads":{"total":298096,"byMonth":{"202605":19739,"202606":90793,"202607":111711,"202608":65477,"202609":10376}},"Directo":{"total":187714,"byMonth":{"202605":15981,"202606":60802,"202607":63046,"202608":35273,"202609":12612}},"Google My Business":{"total":132534,"byMonth":{"202605":9167,"202606":29685,"202607":43691,"202608":38266,"202609":11725}},"TikTok Ads":{"total":27774,"byMonth":{"202605":2956,"202606":7714,"202607":8802,"202608":7182,"202609":1120}},"Referral/Social":{"total":60401,"byMonth":{"202605":4598,"202606":17478,"202607":21014,"202608":13046,"202609":4265}},"Email":{"total":16077,"byMonth":{"202605":1732,"202606":4596,"202607":4834,"202608":3308,"202609":1607}},"IA (ChatGPT/Gemini)":{"total":2608,"byMonth":{"202605":0,"202606":328,"202607":930,"202608":1001,"202609":349}},"Otros":{"total":24855,"byMonth":{"202605":2086,"202606":6354,"202607":7141,"202608":4680,"202609":4594}}},
+  // Auto-atribución de cada plataforma (lo que cada una reporta haber generado · May–Sep 2026)
+  // Meta: compras+valor 7d-click+1d-view (API) · Google: conv+valor (Google Ads API) · TikTok: conversiones sin valor fiable
+  platformSelfAtr: {
+    "Meta Ads":   { p:16958, spend:186315, r:4283952, byMonth:{"202605":1786,"202606":4596,"202607":5879,"202608":3787,"202609":910} },
+    "Google Ads": { p:29341, spend:91714,  r:7323810, byMonth:{"202605":3922,"202606":8564,"202607":9652,"202608":5771,"202609":1432} },
+    "TikTok Ads": { p:39244, spend:82189,  r:0, byMonth:{"202605":3514,"202606":16910,"202607":17039,"202608":1442,"202609":339}, warning:"Tracking de conversiones no configurado en TikTok · pendiente de implementar pixel de conversión" },
+  },
+  brandByMonth: {"202510":{"marca":152,"nomarca":685,"otros":796},"202511":{"marca":124,"nomarca":1095,"otros":546},"202512":{"marca":75,"nomarca":579,"otros":1198},"202601":{"marca":127,"nomarca":809,"otros":1380},"202602":{"marca":152,"nomarca":1582,"otros":831},"202603":{"marca":157,"nomarca":3579,"otros":1604},"202604":{"marca":758,"nomarca":7170,"otros":5898},"202605":{"marca":1217,"nomarca":8189,"otros":7941},"202606":{"marca":1482,"nomarca":11160,"otros":10824},"202607":{"marca":1747,"nomarca":12874,"otros":10418},"202608":{"marca":2153,"nomarca":11113,"otros":6486},"202609":{"marca":719,"nomarca":4641,"otros":1538}},
+  brandByMonthDetail: {"202510":{"marca":152,"nomarca":685,"pmax":466,"demgen":330,"video":0},"202511":{"marca":124,"nomarca":1095,"pmax":452,"demgen":69,"video":25},"202512":{"marca":75,"nomarca":579,"pmax":1197,"demgen":0,"video":2},"202601":{"marca":127,"nomarca":809,"pmax":1380,"demgen":0,"video":0},"202602":{"marca":152,"nomarca":1582,"pmax":826,"demgen":0,"video":4},"202603":{"marca":157,"nomarca":3579,"pmax":933,"demgen":83,"video":588},"202604":{"marca":758,"nomarca":7170,"pmax":2440,"demgen":2560,"video":898},"202605":{"marca":1217,"nomarca":8189,"pmax":3044,"demgen":4290,"video":608},"202606":{"marca":1482,"nomarca":11160,"pmax":4175,"demgen":5768,"video":882},"202607":{"marca":1747,"nomarca":12874,"pmax":4504,"demgen":5613,"video":302},"202608":{"marca":2153,"nomarca":11113,"pmax":3078,"demgen":3408,"video":0},"202609":{"marca":719,"nomarca":4641,"pmax":1403,"demgen":136,"video":0}},
+  // Clicks de búsquedas de MARCA únicamente (kampaoh/kampao/kampoah/kampaho)
+  // Fuente: GSC API · script gsc-marca-refresh.js → gsc-marca-bymonth.json · 2026-09-28
+  gscByMonth: {"202505":{"clicks":70777,"imp":133887},"202506":{"clicks":151974,"imp":352438},"202507":{"clicks":240496,"imp":582531},"202508":{"clicks":185973,"imp":411241},"202509":{"clicks":51728,"imp":112186},"202510":{"clicks":19473,"imp":37005},"202511":{"clicks":10791,"imp":22031},"202512":{"clicks":13586,"imp":21974},"202601":{"clicks":27773,"imp":47452},"202602":{"clicks":31101,"imp":53416},"202603":{"clicks":49559,"imp":86601},"202604":{"clicks":55080,"imp":105575},"202605":{"clicks":89808,"imp":176866},"202606":{"clicks":141651,"imp":314784},"202607":{"clicks":173560,"imp":424403},"202608":{"clicks":125050,"imp":313220},"202609":{"clicks":33452,"imp":76678}},
+  gscBrandByKeyword: {
+    "kampaoh": {"202505":67806,"202506":144625,"202507":229334,"202508":178071,"202509":49272,"202510":18400,"202511":10212,"202512":12779,"202601":26437,"202602":29647,"202603":47222,"202604":52121,"202605":85644,"202606":134991,"202607":165141,"202608":118399,"202609":31427},
+    "kampao":  {"202505":1614,"202506":3974,"202507":5997,"202508":3901,"202509":1234,"202510":582,"202511":302,"202512":428,"202601":699,"202602":795,"202603":1263,"202604":1684,"202605":2386,"202606":3650,"202607":4627,"202608":3578,"202609":1066},
+    "kampoah": {"202505":871,"202506":2023,"202507":3161,"202508":2418,"202509":761,"202510":296,"202511":174,"202512":235,"202601":374,"202602":385,"202603":639,"202604":748,"202605":1035,"202606":1808,"202607":2288,"202608":1812,"202609":573},
+    "kampaho": {"202505":486,"202506":1352,"202507":2004,"202508":1583,"202509":461,"202510":195,"202511":103,"202512":144,"202601":263,"202602":274,"202603":435,"202604":527,"202605":743,"202606":1202,"202607":1504,"202608":1261,"202609":386},
+  },
+  // Evolución mensual por query individual (top 30 · May 25–Sep 26)
+  gscByQueryMonth: {"kampaoh":{"202505":38063,"202506":97645,"202507":148996,"202508":108809,"202509":31770,"202510":14781,"202511":9105,"202512":11681,"202601":20963,"202602":21877,"202603":33311,"202604":41345,"202605":63173,"202606":100752,"202607":109283,"202608":81923,"202609":23060},"kampaoh las arenas":{"202505":1412,"202506":3075,"202507":6070,"202508":6595,"202509":1847,"202510":404,"202511":66,"202512":58,"202601":254,"202602":336,"202603":700,"202604":577,"202605":1340,"202606":2852,"202607":5540,"202608":3237,"202609":682},"kampao":{"202505":1435,"202506":3546,"202507":5230,"202508":3538,"202509":1147,"202510":548,"202511":285,"202512":413,"202601":653,"202602":744,"202603":1178,"202604":1563,"202605":2212,"202606":3363,"202607":4182,"202608":3229,"202609":973},"kampaoh el palmar":{"202505":3246,"202506":3396,"202507":3971,"202508":3784,"202509":1174,"202510":350,"202511":104,"202512":72,"202601":399,"202602":544,"202603":1163,"202604":930,"202605":1953,"202606":2278,"202607":3286,"202608":2107,"202609":711},"camping kampaoh":{"202505":781,"202506":2314,"202507":3784,"202508":2620,"202509":589,"202510":226,"202511":52,"202512":73,"202601":390,"202602":494,"202603":736,"202604":922,"202605":1215,"202606":2222,"202607":2872,"202608":1907,"202609":457},"kampaoh tarifa":{"202505":2108,"202506":2363,"202507":2991,"202508":2634,"202509":1027,"202510":353,"202511":88,"202512":122,"202601":564,"202602":650,"202603":973,"202604":528,"202605":1180,"202606":1389,"202607":2274,"202608":1724,"202609":543},"kampaoh cantabria":{"202505":428,"202506":1144,"202507":3843,"202508":3268,"202509":818,"202510":326,"202511":106,"202512":90,"202601":334,"202602":368,"202603":611,"202604":898,"202605":1061,"202606":1876,"202607":3259,"202608":2110,"202609":788},"kampaoh isla cristina":{"202505":1985,"202506":1874,"202507":2215,"202508":2339,"202509":747,"202510":99,"202511":30,"202512":13,"202601":156,"202602":265,"202603":815,"202604":776,"202605":1252,"202606":1910,"202607":2519,"202608":1595,"202609":641},"kampoah":{"202505":689,"202506":1684,"202507":2513,"202508":1861,"202509":591,"202510":243,"202511":165,"202512":226,"202601":355,"202602":362,"202603":596,"202604":694,"202605":890,"202606":1505,"202607":1793,"202608":1436,"202609":463},"kampaoh cordoba":{"202505":538,"202506":785,"202507":1179,"202508":1524,"202509":1023,"202510":636,"202511":397,"202512":372,"202601":702,"202602":1155,"202603":1270,"202604":525,"202605":785,"202606":848,"202607":1225,"202608":872,"202609":468},"kampaho":{"202505":413,"202506":1189,"202507":1682,"202508":1283,"202509":375,"202510":176,"202511":92,"202512":138,"202601":254,"202602":258,"202603":411,"202604":494,"202605":665,"202606":1053,"202607":1249,"202608":1023,"202609":314},"kampaoh doñana":{"202505":762,"202506":792,"202507":1420,"202508":1496,"202509":385,"202510":90,"202512":27,"202601":392,"202602":432,"202603":518,"202604":342,"202605":676,"202606":619,"202607":1576,"202608":724,"202609":192},"kampaoh asturias":{"202505":309,"202506":742,"202507":1632,"202508":1234,"202509":280,"202510":30,"202511":6,"202601":76,"202602":181,"202603":298,"202604":363,"202605":671,"202606":891,"202607":1392,"202608":993,"202609":198},"kampaoh costa brava":{"202505":846,"202506":1018,"202507":1410,"202508":1223,"202509":382,"202510":13,"202511":7,"202601":116,"202602":180,"202603":235,"202604":193,"202605":580,"202606":759,"202607":1134,"202608":941,"202609":240},"kampaoh oliva":{"202505":478,"202506":1062,"202507":1594,"202508":1167,"202509":319,"202510":54,"202601":62,"202602":191,"202603":353,"202604":529,"202605":883,"202606":910,"202607":795,"202608":591,"202609":158},"kampaoh cadiz":{"202505":410,"202506":864,"202507":1372,"202508":857,"202509":250,"202510":26,"202511":6,"202601":87,"202602":220,"202603":298,"202604":335,"202605":523,"202606":733,"202607":992,"202608":903,"202609":166},"kampaoh arcos":{"202505":345,"202506":1022,"202507":1768,"202508":1344,"202509":374,"202510":41,"202512":34,"202601":69,"202602":109,"202603":398,"202604":395,"202605":629,"202606":546,"202607":509,"202608":320,"202609":67},"kampaoh los caños":{"202505":1072,"202506":963,"202507":1183,"202508":1371,"202509":488,"202510":36,"202512":12,"202601":58,"202602":124,"202603":191,"202604":17,"202605":326,"202606":431,"202607":630,"202608":515,"202609":124},"kampaoh trafalgar":{"202505":741,"202506":721,"202507":940,"202508":1126,"202509":275,"202511":13,"202512":9,"202601":73,"202602":107,"202603":321,"202604":73,"202605":437,"202606":573,"202607":1079,"202608":688,"202609":171},"kampaoh kikopark playa":{"202505":753,"202506":1029,"202507":1433,"202508":984,"202509":269,"202602":44,"202603":197,"202604":180,"202605":309,"202606":447,"202607":519,"202608":418,"202609":48},"kampaoh galicia":{"202505":255,"202506":761,"202507":1578,"202508":971,"202509":90,"202601":18,"202602":19,"202603":86,"202604":109,"202605":220,"202606":521,"202607":800,"202608":545,"202609":73},"kampaoh el puerto":{"202505":404,"202506":556,"202507":778,"202508":583,"202509":151,"202510":12,"202601":177,"202602":172,"202603":362,"202604":131,"202605":470,"202606":558,"202607":699,"202608":510,"202609":75},"kampaoh ria de vigo":{"202505":280,"202506":563,"202507":1098,"202508":770,"202509":136,"202601":13,"202602":20,"202603":149,"202604":57,"202605":262,"202606":425,"202607":1027,"202608":528,"202609":187},"kampaoh cambrils":{"202505":470,"202506":717,"202507":656,"202508":764,"202509":160,"202601":23,"202602":49,"202603":68,"202604":32,"202605":209,"202606":655,"202607":867,"202608":648,"202609":31},"kampaoh españa":{"202505":321,"202506":686,"202507":1216,"202508":737,"202509":159,"202510":52,"202511":6,"202512":12,"202601":128,"202602":120,"202603":249,"202604":219,"202605":185,"202606":293,"202607":407,"202608":347,"202609":48},"kampaoh somo playa":{"202505":394,"202506":540,"202507":882,"202508":992,"202509":143,"202601":110,"202602":89,"202603":88,"202604":20,"202605":146,"202606":415,"202607":719,"202608":396,"202609":70},"kampaoh andalucía":{"202505":225,"202506":550,"202507":969,"202508":663,"202509":217,"202510":52,"202511":12,"202512":6,"202601":65,"202602":66,"202603":138,"202604":155,"202605":245,"202606":376,"202607":529,"202608":432,"202609":67},"kampaoh tossa de mar":{"202505":394,"202506":656,"202507":704,"202508":559,"202509":164,"202601":6,"202602":37,"202603":55,"202604":110,"202605":438,"202606":488,"202607":597,"202608":395,"202609":161},"kampaoh camping":{"202505":262,"202506":654,"202507":781,"202508":561,"202509":83,"202510":12,"202512":8,"202601":47,"202602":58,"202603":155,"202604":162,"202605":221,"202606":339,"202607":586,"202608":628,"202609":173},"kampaoh conil":{"202505":58,"202506":142,"202507":264,"202508":145,"202509":15,"202603":217,"202604":271,"202605":546,"202606":845,"202607":1125,"202608":609,"202609":118}},
+  topQueries: [{"q":"kampaoh","clicks":238083,"ctr":71,"pos":1.3,"brand":true},{"q":"kampaoh las arenas","clicks":10383,"ctr":14.7,"pos":1.1,"brand":true},{"q":"kampao","clicks":9114,"ctr":71.2,"pos":1.1,"brand":true},{"q":"kampaoh el palmar","clicks":6694,"ctr":13.6,"pos":1.2,"brand":true},{"q":"kampaoh cantabria","clicks":6588,"ctr":40.7,"pos":1.3,"brand":true},{"q":"camping kampaoh","clicks":5803,"ctr":48.9,"pos":1.2,"brand":true},{"q":"kampaoh isla cristina","clicks":5071,"ctr":15.1,"pos":1.3,"brand":true},{"q":"kampaoh tarifa","clicks":4859,"ctr":13.3,"pos":1.3,"brand":true},{"q":"que ver en santander","clicks":4750,"ctr":13.1,"pos":4.2,"brand":false},{"q":"kampoah","clicks":4067,"ctr":58.4,"pos":2.1,"brand":true},{"q":"camping las arenas","clicks":3302,"ctr":24.4,"pos":1.6,"brand":false},{"q":"camping faro de trafalgar","clicks":3015,"ctr":38.9,"pos":1.4,"brand":false},{"q":"kampaoh asturias","clicks":2855,"ctr":43.9,"pos":1.2,"brand":true},{"q":"kampaho","clicks":2820,"ctr":70.3,"pos":1.4,"brand":true},{"q":"kampaoh doñana","clicks":2772,"ctr":16.6,"pos":1.2,"brand":true}],
+  // GA4 · sessionSource = dominio IA · Abr–Sep 2026 · booking.kampaoh.com
+  iaSources: {
+    "chatgpt.com":          { ses:12446, usr:10015, p:218, r:50578 },
+    "gemini.google.com":    { ses:154,   usr:116,   p:7,   r:1999  },
+    "claude.ai":            { ses:32,    usr:17,    p:0,   r:0     },
+    "perplexity.ai":        { ses:24,    usr:18,    p:0,   r:0     },
+  },
+  iaByMonth: {"202604":{"ses":831,"usr":668,"p":11,"r":2544},"202605":{"ses":1732,"usr":1360,"p":27,"r":6304},"202606":{"ses":1932,"usr":1589,"p":36,"r":9044},"202607":{"ses":3220,"usr":2614,"p":70,"r":20368},"202608":{"ses":3710,"usr":2955,"p":56,"r":11484},"202609":{"ses":1231,"usr":980,"p":25,"r":2832}},
+  // GA4 · totalUsers por mes (es.kampaoh.com, todos los canales)
+  usersByMonth: {"202410":104357,"202411":72250,"202412":77048,"202501":113993,"202502":115913,"202503":146693,"202504":205893,"202505":258946,"202506":404835,"202507":625584,"202508":516758,"202509":198030,"202510":117864,"202511":86907,"202512":87537,"202601":101237,"202602":86243,"202603":121836,"202604":167978,"202605":254132,"202606":371040,"202607":404964,"202608":282301,"202609":92335},
+  funnel: {"Jun 26":{"view":169144,"cart":43222,"purchase":2587},"Jul 26":{"view":1066320,"cart":256415,"purchase":15550},"Ago 26":{"view":741976,"cart":190155,"purchase":9789},"Sep 26":{"view":173872,"cart":54592,"purchase":2723}},
+  sessionsByMonth: {"202410":{"Organic Search":26362,"Unassigned":11895,"Meta Ads":8349,"Google Ads (SEM)":6029,"Direct":4516,"Referral":2480,"Cross-network (PMax)":644,"TikTok Ads":115,"Email":37,"Organic Social":54},"202411":{"Organic Search":21058,"Unassigned":7078,"Meta Ads":3538,"Direct":2914,"Google Ads (SEM)":2588,"Referral":1449,"Email":88,"TikTok Ads":67,"Organic Social":18},"202412":{"Organic Search":27279,"Unassigned":7746,"Google Ads (SEM)":3802,"Direct":3523,"Meta Ads":3571,"Referral":1866,"Email":252,"TikTok Ads":196,"Cross-network (PMax)":71,"Organic Social":10},"202501":{"Organic Search":42545,"Unassigned":16165,"Google Ads (SEM)":11695,"Direct":6140,"Meta Ads":8551,"Referral":2888,"TikTok Ads":506,"Email":44},"202502":{"Organic Search":42738,"Unassigned":17726,"Google Ads (SEM)":13624,"Direct":6223,"Meta Ads":4439,"Referral":2840,"Cross-network (PMax)":681,"Email":327,"TikTok Ads":304},"202503":{"Organic Search":58866,"Unassigned":21805,"Google Ads (SEM)":15368,"Direct":8780,"Meta Ads":8099,"Referral":3909,"Cross-network (PMax)":1034,"TikTok Ads":770,"Email":208},"202504":{"Organic Search":77199,"Unassigned":29154,"Google Ads (SEM)":20267,"Direct":10069,"Meta Ads":12252,"Referral":6342,"Cross-network (PMax)":814,"TikTok Ads":157,"Email":87},"202505":{"Organic Search":119369,"Unassigned":40195,"Google Ads (SEM)":30264,"Direct":15116,"Meta Ads":18423,"Referral":10164,"TikTok Ads":622,"Cross-network (PMax)":608,"Email":349},"202506":{"Organic Search":155244,"Google Ads (SEM)":109334,"Unassigned":48580,"Meta Ads":36206,"Direct":22049,"Referral":13056,"TikTok Ads":1511,"Cross-network (PMax)":870,"Email":261},"202507":{"Organic Search":237695,"Google Ads (SEM)":179307,"Unassigned":68745,"Meta Ads":69320,"Direct":33940,"Referral":20215,"Cross-network (PMax)":6572,"Email":4944,"TikTok Ads":8293},"202508":{"Organic Search":192360,"Google Ads (SEM)":92220,"Unassigned":61074,"Meta Ads":44036,"Direct":26402,"Referral":17860,"Cross-network (PMax)":5371,"TikTok Ads":3910,"Email":1655},"202509":{"Organic Search":63558,"Google Ads (SEM)":28008,"Unassigned":19426,"Meta Ads":12243,"Direct":8863,"Referral":7360,"Email":1211,"Cross-network (PMax)":980,"TikTok Ads":462},"202510":{"Organic Search":29269,"Google Ads (SEM)":10644,"Unassigned":10112,"Direct":5843,"Meta Ads":6327,"Cross-network (PMax)":1217,"Email":992,"Referral":1737,"TikTok Ads":9},"202511":{"Organic Search":21753,"Google Ads (SEM)":7452,"Meta Ads":7003,"Unassigned":6457,"Direct":4690,"Cross-network (PMax)":3235,"Email":756,"Referral":897,"TikTok Ads":22},"202512":{"Organic Search":33505,"Unassigned":6708,"Google Ads (SEM)":5346,"Direct":4313,"Meta Ads":4573,"Cross-network (PMax)":1312,"Email":758,"TikTok Ads":405,"Referral":893},"202601":{"Organic Search":37702,"Unassigned":12787,"Google Ads (SEM)":10077,"Direct":5816,"Meta Ads":4868,"Email":1626,"Cross-network (PMax)":1570,"TikTok Ads":973,"Referral":1614},"202602":{"Organic Search":34091,"Google Ads (SEM)":14536,"Unassigned":13834,"Direct":5919,"Meta Ads":6702,"Cross-network (PMax)":3473,"TikTok Ads":2246,"Email":1233,"Referral":1668},"202603":{"Organic Search":49474,"Google Ads (SEM)":19958,"Unassigned":19409,"Cross-network (PMax)":9014,"Direct":8189,"Meta Ads":10962,"TikTok Ads":2861,"Email":1712,"Referral":2523},"202604":{"Organic Search":59037,"Google Ads (SEM)":46011,"Unassigned":20309,"Cross-network (PMax)":14451,"Meta Ads":16313,"Direct":10075,"TikTok Ads":3907,"Email":1645,"Referral":3349},"202605":{"Organic Search":89600,"Google Ads (SEM)":62240,"Cross-network (PMax)":34799,"Meta Ads":42377,"Unassigned":27388,"Direct":13873,"TikTok Ads":10611,"Referral":5823,"Email":1512},"202606":{"Organic Search":139588,"Google Ads (SEM)":107688,"Meta Ads":99958,"Unassigned":35335,"Cross-network (PMax)":23949,"Direct":20716,"TikTok Ads":6006,"Referral":9900,"Email":1148,"AI Assistant":379},"202607":{"Organic Search":171405,"Google Ads (SEM)":129011,"Meta Ads":82334,"Unassigned":49234,"Direct":24407,"Cross-network (PMax)":23981,"Referral":12349,"TikTok Ads":3427,"AI Assistant":1020,"Email":395},"202608":{"Organic Search":123286,"Google Ads (SEM)":111507,"Unassigned":42704,"Direct":17874,"Cross-network (PMax)":13665,"Meta Ads":19567,"TikTok Ads":2443,"Referral":8265,"AI Assistant":1030,"Email":647},"202609":{"Organic Search":36156,"Google Ads (SEM)":27259,"Unassigned":15102,"Direct":5548,"Cross-network (PMax)":5722,"Meta Ads":2720,"Email":1012,"TikTok Ads":603,"Referral":2576,"AI Assistant":367}}
+};
+
+const FT_MONTHS = ["202605","202606","202607","202608","202609"];
+const LC_MONTHS = ["202608","202609"];
+let activeAtrModel = 'lc';
+
+const MONTHS    = ["202604","202605","202606","202607","202608","202609"];
+const M_LABELS  = ["Abr 26","May 26","Jun 26","Jul 26","Ago 26","Sep 26"];
+const FY_MONTHS = ["202510","202511","202512","202601","202602","202603","202604","202605","202606","202607","202608","202609"];
+const FY_LABELS = ["Oct 25","Nov 25","Dic 25","Ene 26","Feb 26","Mar 26","Abr 26","May 26","Jun 26","Jul 26","Ago 26","Sep 26"];
+
+const CH_COLORS = {
+  // GA4 atribución (booking)
+  "Google Orgánico": "#16a34a",
+  "Google Ads": "#2563eb",
+  "Directo": "#64748b",
+  "Google My Business": "#0891b2",
+  "Meta Ads": "#7c3aed",
+  "IA (ChatGPT/Gemini)": "#dc2626",
+  "Referral/Social": "#d97706",
+  "Email": "#0d9488",
+  "Orgánico otros": "#84cc16",
+  // GA4 sesiones (visitas)
+  "Organic Search": "#16a34a",
+  "Paid Search": "#2563eb",
+  "Paid Social": "#7c3aed",
+  "Direct": "#64748b",
+  "Cross-network": "#0891b2",
+  "Referral": "#d97706",
+  "Organic Social": "#ea580c",
+  "Email": "#0d9488",
+  "Unassigned": "#94a3b8",
+  "AI Assistant": "#dc2626",
+  "TikTok Ads": "#f97316",
+  "Meta Ads": "#7c3aed",
+  "Paid Other": "#84cc16",
+};
+
+const fmt = (n, d=0) => n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(d||1)+'k' : Math.round(n).toString();
+const eur = (n) => '€' + fmt(n);
+
+function isDark() {
+  const t = document.documentElement.dataset.theme;
+  if (t==='dark') return true;
+  if (t==='light') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function chartDefaults() {
+  const dark = isDark();
+  return {
+    color: dark ? '#8fa292' : '#697b6c',
+    gridColor: dark ? '#2a3c2c' : '#e5ebe6',
+    tickColor: dark ? '#8fa292' : '#697b6c',
+  };
+}
+
+Chart.defaults.font.family = "'Outfit', system-ui, sans-serif";
+Chart.defaults.font.size = 12;
+
+// ── TAB 1: Tráfico por canal ──────────────────────────────────────────────
+const _charts = {};
+function destroyChart(id) { if (_charts[id]) { _charts[id].destroy(); delete _charts[id]; } }
+
+// FY = Oct–Sep
+const FY2526 = ["202510","202511","202512","202601","202602","202603","202604","202605","202606","202607","202608","202609"];
+const FY2425 = ["202410","202411","202412","202501","202502","202503","202504","202505","202506","202507","202508","202509"];
+const FY_LBL = ["Oct","Nov","Dic","Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep"];
+
+function sessTotal(months) {
+  const t = {};
+  months.forEach(m => Object.entries(DATA.sessionsByMonth[m]||{}).forEach(([ch,s])=>{ t[ch]=(t[ch]||0)+s; }));
+  return t;
+}
+function sessMonthTotal(m) { return Object.values(DATA.sessionsByMonth[m]||{}).reduce((a,b)=>a+b,0); }
+
+const TOP_CHANNELS = ["Organic Search","Google Ads (SEM)","Meta Ads","TikTok Ads","Cross-network (PMax)","Direct","Referral","Unassigned","AI Assistant","Email"];
+
+function buildTrafico() {
+  const tot2526 = sessTotal(FY2526);
+  const tot2425 = sessTotal(FY2425);
+  const total2526 = Object.values(tot2526).reduce((a,b)=>a+b,0);
+  const total2425 = Object.values(tot2425).reduce((a,b)=>a+b,0);
+  const pct = Math.round((total2526-total2425)/total2425*100);
+
+  // Tiles
+  document.getElementById('tiles-trafico').innerHTML = [
+    ['Total sesiones FY25-26', fmt(total2526), (pct>=0?'+':'')+pct+'% vs FY24-25', 'accent'],
+    ['Usuarios únicos FY25-26', fmt(FY2526.reduce((s,m)=>s+(DATA.usersByMonth[m]||0),0)), 'oct 25–sep 26', ''],
+    ['Meta Ads', fmt(tot2526['Meta Ads']||0), Math.round((tot2526['Meta Ads']||0)/total2526*100)+'% del tráfico', 'purple'],
+    ['Google Ads (SEM)', fmt(tot2526['Google Ads (SEM)']||0), Math.round((tot2526['Google Ads (SEM)']||0)/total2526*100)+'% del tráfico', 'blue'],
+  ].map(([l,v,s,cls])=>`<div class="tile ${cls}"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${s}</div></div>`).join('');
+
+  destroyChart('chart-trafico');
+  const { gridColor, tickColor } = chartDefaults();
+  const showChannels = TOP_CHANNELS.filter(ch => (tot2526[ch]||0)>1000);
+
+  _charts['chart-trafico'] = new Chart(document.getElementById('chart-trafico'), {
+    type: 'bar',
+    data: {
+      labels: FY_LBL,
+      datasets: [
+        ...showChannels.map(ch => ({
+          label: ch,
+          data: FY2526.map(m => DATA.sessionsByMonth[m]?.[ch]||0),
+          backgroundColor: CH_COLORS[ch]||'#94a3b8',
+          borderWidth: 0,
+        })),
+        { label:'Otros', data: FY2526.map(m => { const t=sessMonthTotal(m); return t - showChannels.reduce((a,ch)=>a+(DATA.sessionsByMonth[m]?.[ch]||0),0); }), backgroundColor:'#cbd5e1', borderWidth:0 }
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:10,color:tickColor,padding:8,font:{size:11}}}}, scales:{x:{stacked:true,grid:{display:false},ticks:{color:tickColor}},y:{stacked:true,grid:{color:gridColor},ticks:{color:tickColor,callback:v=>fmt(v)}}}}
+  });
+
+  // YoY line — total sesiones FY mes a mes
+  destroyChart('chart-trafico-yoy');
+  _charts['chart-trafico-yoy'] = new Chart(document.getElementById('chart-trafico-yoy'), {
+    type:'line',
+    data:{
+      labels: FY_LBL,
+      datasets:[
+        { label:'Sesiones FY25-26', data:FY2526.map(sessMonthTotal), borderColor:'#16a34a', backgroundColor:'rgba(22,163,74,.1)', borderWidth:2, pointRadius:4, fill:true, tension:.3 },
+        { label:'Sesiones FY24-25', data:FY2425.map(sessMonthTotal), borderColor:'#94a3b8', borderDash:[4,4], borderWidth:2, pointRadius:3, fill:false, tension:.3 },
+        { label:'Usuarios únicos FY25-26', data:FY2526.map(m=>DATA.usersByMonth[m]||null), borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.08)', borderWidth:2, pointRadius:4, fill:false, tension:.3, borderDash:[2,2] },
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{boxWidth:10,color:tickColor,padding:10}}},scales:{x:{grid:{display:false},ticks:{color:tickColor}},y:{grid:{color:gridColor},ticks:{color:tickColor,callback:v=>fmt(v)}}}}
+  });
+
+  // Tabla de detalle por canal × mes
+  const detailChannels = TOP_CHANNELS.filter(ch => (tot2526[ch]||0)>500);
+  const tblHtml = `
+    <table style="font-size:.78rem">
+      <thead><tr>
+        <th>Canal</th>
+        ${FY_LBL.map((l,i)=>`<th style="text-align:right">${l}<br><span style="font-weight:400;opacity:.6;font-size:.7em">${FY2526[i].slice(2,4)}/${FY2526[i].slice(4)}</span></th>`).join('')}
+        <th style="text-align:right;font-weight:700">Total</th>
+        <th style="text-align:right">vs FY24-25</th>
+      </tr></thead>
+      <tbody>
+        ${detailChannels.map(ch => {
+          const prev = tot2425[ch]||0;
+          const curr = tot2526[ch]||0;
+          const diffPct = prev>0 ? Math.round((curr-prev)/prev*100) : null;
+          const pctStr = diffPct!==null ? `<span style="color:${diffPct>=0?'var(--accent)':'var(--red)'}">${diffPct>=0?'+':''}${diffPct}%</span>` : '—';
+          return `<tr>
+            <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${CH_COLORS[ch]||'#94a3b8'};margin-right:6px"></span>${ch}</td>
+            ${FY2526.map(m=>`<td style="text-align:right">${DATA.sessionsByMonth[m]?.[ch] ? fmt(DATA.sessionsByMonth[m][ch]) : '<span style="opacity:.3">—</span>'}</td>`).join('')}
+            <td style="text-align:right;font-weight:600">${fmt(curr)}</td>
+            <td style="text-align:right">${pctStr}</td>
+          </tr>`;
+        }).join('')}
+        <tr style="font-weight:700;border-top:2px solid var(--border)">
+          <td>TOTAL sesiones</td>
+          ${FY2526.map(m=>`<td style="text-align:right">${fmt(sessMonthTotal(m))}</td>`).join('')}
+          <td style="text-align:right">${fmt(total2526)}</td>
+          <td style="text-align:right"><span style="color:${pct>=0?'var(--accent)':'var(--red)'}">${pct>=0?'+':''}${pct}%</span></td>
+        </tr>
+        <tr style="border-top:1px dashed var(--border);opacity:.8">
+          <td style="font-style:italic">Usuarios únicos</td>
+          ${FY2526.map(m=>`<td style="text-align:right">${DATA.usersByMonth[m] ? fmt(DATA.usersByMonth[m]) : '<span style="opacity:.3">—</span>'}</td>`).join('')}
+          <td style="text-align:right;font-weight:600">${fmt(FY2526.reduce((s,m)=>s+(DATA.usersByMonth[m]||0),0))}</td>
+          <td style="text-align:right">—</td>
+        </tr>
+      </tbody>
+    </table>`;
+  const detailEl = document.getElementById('tbl-trafico-detail');
+  if (detailEl) detailEl.innerHTML = tblHtml;
+}
+
+// ── TAB 2: Atribución ────────────────────────────────────────────────────
+function buildAtribucion() {
+  const ATR_MONTHS = activeAtrModel === 'ft' ? FT_MONTHS : LC_MONTHS;
+  const src = activeAtrModel === 'ft' ? DATA.atrFT : DATA.atrLC;
+  const allChannels = Object.keys(src);
+  const dynTotals = {};
+  allChannels.forEach(ch => {
+    const p = ATR_MONTHS.reduce((s,m)=>s+(src[ch]?.[m]?.p||0),0);
+    const r = ATR_MONTHS.reduce((s,m)=>s+(src[ch]?.[m]?.r||0),0);
+    if (p > 0) dynTotals[ch] = {p, r};
+  });
+
+  const channels = Object.keys(dynTotals).sort((a,b)=>dynTotals[b].p-dynTotals[a].p);
+  const { tickColor } = chartDefaults();
+  const colors = channels.map(ch => CH_COLORS[ch]||'#94a3b8');
+  const totalP = channels.reduce((s,ch)=>s+dynTotals[ch].p,0);
+  const totalR = channels.reduce((s,ch)=>s+dynTotals[ch].r,0);
+
+  destroyChart('chart-atr-donut');
+  destroyChart('chart-atr-rev');
+
+  _charts['chart-atr-donut'] = new Chart(document.getElementById('chart-atr-donut'), {
+    type: 'doughnut',
+    data: { labels: channels, datasets: [{ data: channels.map(ch=>dynTotals[ch].p), backgroundColor: colors, borderWidth: 2 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{position:'right', labels:{boxWidth:10,color:tickColor,padding:8,font:{size:11}}} } }
+  });
+
+  _charts['chart-atr-rev'] = new Chart(document.getElementById('chart-atr-rev'), {
+    type: 'doughnut',
+    data: { labels: channels, datasets: [{ data: channels.map(ch=>dynTotals[ch].r), backgroundColor: colors, borderWidth: 2 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{display:false} } }
+  });
+
+  // Attribution table with sessions — filtered to ATR_MONTHS
+  const sessByChannel = ch => ATR_MONTHS.reduce((s,m)=>s+(DATA.bookingSess[ch]?.byMonth?.[m]||0),0);
+  const totalSess = Object.keys(DATA.bookingSess).reduce((s,ch)=>s+sessByChannel(ch),0);
+  const tbl = document.getElementById('tbl-atr');
+  tbl.innerHTML = `<thead><tr>
+    <th>Canal</th>
+    <th style="text-align:right">Sesiones</th>
+    <th style="text-align:right">% ses.</th>
+    <th style="text-align:right">Compras</th>
+    <th style="text-align:right">Conv.</th>
+    <th style="text-align:right">Ingresos</th>
+    <th style="text-align:right">Ticket</th>
+  </tr></thead>
+  <tbody>${channels.map(ch=>{
+    const {p,r}=dynTotals[ch];
+    const sess = sessByChannel(ch);
+    const conv = sess>0 ? (p/sess*100).toFixed(2)+'%' : '—';
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${CH_COLORS[ch]||'#94a3b8'};margin-right:6px"></span>${ch}</td>
+      <td style="text-align:right">${sess>0?fmt(sess):'<span style="opacity:.4">—</span>'}</td>
+      <td style="text-align:right;opacity:.7">${sess>0?Math.round(sess/totalSess*100)+'%':'—'}</td>
+      <td style="text-align:right;font-weight:500">${fmt(p)}</td>
+      <td style="text-align:right;font-variant-numeric:tabular-nums;color:${sess>0&&p/sess>.03?'var(--accent)':'inherit'}">${conv}</td>
+      <td style="text-align:right">${eur(r)}</td>
+      <td style="text-align:right;opacity:.8">${eur(r/p)}</td>
+    </tr>`;
+  }).join('')}
+  <tr style="font-weight:600;border-top:2px solid var(--border)">
+    <td>TOTAL</td>
+    <td style="text-align:right">${fmt(totalSess)}</td>
+    <td style="text-align:right;opacity:.7">100%</td>
+    <td style="text-align:right">${fmt(totalP)}</td>
+    <td style="text-align:right">${(totalP/totalSess*100).toFixed(2)}%</td>
+    <td style="text-align:right">${eur(totalR)}</td>
+    <td style="text-align:right;opacity:.8">${eur(totalR/totalP)}</td>
+  </tr></tbody>`;
+
+  // Platform comparison table
+  const paidChannels = [
+    { name: 'Meta Ads',   ga4ft: FT_MONTHS.reduce((s,m)=>s+(DATA.atrFT['Meta Ads']?.[m]?.p||0),0),   ga4lc: LC_MONTHS.reduce((s,m)=>s+(DATA.atrLC['Meta Ads']?.[m]?.p||0),0),   self: DATA.platformSelfAtr['Meta Ads'],   color: CH_COLORS['Meta Ads'] },
+    { name: 'Google Ads', ga4ft: FT_MONTHS.reduce((s,m)=>s+(DATA.atrFT['Google Ads']?.[m]?.p||0),0), ga4lc: LC_MONTHS.reduce((s,m)=>s+(DATA.atrLC['Google Ads']?.[m]?.p||0),0), self: DATA.platformSelfAtr['Google Ads'], color: CH_COLORS['Google Ads'] },
+    { name: 'TikTok Ads', ga4ft: FT_MONTHS.reduce((s,m)=>s+(DATA.atrFT['TikTok Ads']?.[m]?.p||0),0), ga4lc: LC_MONTHS.reduce((s,m)=>s+(DATA.atrLC['TikTok Ads']?.[m]?.p||0),0), self: DATA.platformSelfAtr['TikTok Ads'], color: CH_COLORS['TikTok Ads'] },
+  ];
+  const cmpEl = document.getElementById('tbl-platform-compare');
+  if (cmpEl) {
+    cmpEl.innerHTML = `<table>
+      <thead><tr>
+        <th>Plataforma</th>
+        <th style="text-align:right">GA4 First-Touch</th>
+        <th style="text-align:right">GA4 Last-Click</th>
+        <th style="text-align:right">Valor conversión self-report</th>
+        <th style="text-align:right">Ratio self/GA4-FT</th>
+        <th style="text-align:right">Inversión jul–sep</th>
+      </tr></thead>
+      <tbody>${paidChannels.map(c=>{
+        const ga4ftR = dynTotals[c.name]?.r || 0;
+        const selfR = c.self.r || 0;
+        const hasRev = selfR > 0;
+        const ratio = hasRev && ga4ftR > 0 ? (selfR / ga4ftR).toFixed(1)+'×' : '—';
+        const warn = c.self.warning ? ' <span title="'+c.self.warning+'" style="cursor:help">⚠</span>' : '';
+        const selfCell = hasRev ? '€'+fmt(selfR,0) : '<span style="opacity:.5">N/D</span>'+warn;
+        return `<tr>
+          <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c.color};margin-right:6px"></span>${c.name}</td>
+          <td style="text-align:right">${fmt(c.ga4ft)}</td>
+          <td style="text-align:right">${fmt(c.ga4lc)}</td>
+          <td style="text-align:right">${selfCell}${hasRev ? warn : ''}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums">${ratio}</td>
+          <td style="text-align:right">€${fmt(c.self.spend,0)}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  }
+}
+
+// ── TAB 3: Marca vs Sin Marca ─────────────────────────────────────────────
+function buildMarca() {
+  const { gridColor, tickColor } = chartDefaults();
+  const totMarca = FY_MONTHS.reduce((s,m)=>s+(DATA.brandByMonth[m]?.marca||0),0);
+  const totNM = FY_MONTHS.reduce((s,m)=>s+(DATA.brandByMonth[m]?.nomarca||0),0);
+  const totOtros = FY_MONTHS.reduce((s,m)=>s+(DATA.brandByMonth[m]?.otros||0),0);
+  const total = totMarca+totNM+totOtros;
+
+  document.getElementById('tiles-marca').innerHTML = [
+    ['Total Google Ads', '€'+fmt(total,0), 'FY25-26', 'accent'],
+    ['Sin Marca', '€'+fmt(totNM,0), Math.round(totNM/total*100)+'% de la inversión','blue'],
+    ['Con Marca', '€'+fmt(totMarca,0), Math.round(totMarca/total*100)+'% de la inversión',''],
+    ['PMax / Display / DG', '€'+fmt(totOtros,0), Math.round(totOtros/total*100)+'% de la inversión',''],
+  ].map(([l,v,s,cls])=>`<div class="tile ${cls}"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${s}</div></div>`).join('');
+
+  new Chart(document.getElementById('chart-brand-bar'), {
+    type: 'bar',
+    data: {
+      labels: FY_LABELS,
+      datasets: [
+        { label: 'Sin Marca', data: FY_MONTHS.map(m=>DATA.brandByMonth[m]?.nomarca||0), backgroundColor: '#2563eb', borderWidth:0 },
+        { label: 'Con Marca', data: FY_MONTHS.map(m=>DATA.brandByMonth[m]?.marca||0), backgroundColor: '#16a34a', borderWidth:0 },
+        { label: 'Otros', data: FY_MONTHS.map(m=>DATA.brandByMonth[m]?.otros||0), backgroundColor: '#94a3b8', borderWidth:0 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: { legend: { position:'bottom', labels:{boxWidth:10,color:tickColor,padding:10} } },
+      scales: {
+        x: { stacked:true, grid:{display:false}, ticks:{color:tickColor,font:{size:10}} },
+        y: { stacked:true, grid:{color:gridColor}, ticks:{color:tickColor, callback:v=>'€'+fmt(v)} }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('chart-brand-donut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Sin Marca','Con Marca','PMax / Display / DG'],
+      datasets: [{ data:[totNM,totMarca,totOtros], backgroundColor:['#2563eb','#16a34a','#94a3b8'], borderWidth:2 }]
+    },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{ legend:{position:'bottom',labels:{boxWidth:10,color:tickColor,padding:8}} } }
+  });
+
+  // Detail table
+  const detailRows = [
+    { key:'nomarca', label:'Search Sin Marca', color:'#2563eb' },
+    { key:'marca',   label:'Search Con Marca', color:'#16a34a' },
+    { key:'pmax',    label:'PMax',             color:'#0891b2' },
+    { key:'demgen',  label:'Demand Gen',       color:'#7c3aed' },
+    { key:'video',   label:'Vídeo / Alcance',  color:'#d97706' },
+  ];
+  const tblDetail = document.getElementById('tbl-brand-detail');
+  if (tblDetail) {
+    const totByType = {};
+    detailRows.forEach(r => totByType[r.key] = FY_MONTHS.reduce((s,m)=>s+(DATA.brandByMonthDetail[m]?.[r.key]||0),0));
+    const totByMonth = FY_MONTHS.map(m=>detailRows.reduce((s,r)=>s+(DATA.brandByMonthDetail[m]?.[r.key]||0),0));
+    const grandTotal = detailRows.reduce((s,r)=>s+totByType[r.key],0);
+    tblDetail.innerHTML = `<table style="font-size:.78rem">
+      <thead><tr>
+        <th>Tipo</th>
+        ${FY_LABELS.map(l=>`<th style="text-align:right">${l}</th>`).join('')}
+        <th style="text-align:right;border-left:2px solid var(--border)">Total</th>
+        <th style="text-align:right">%</th>
+      </tr></thead>
+      <tbody>
+        ${detailRows.map(r=>`<tr>
+          <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${r.color};margin-right:6px"></span>${r.label}</td>
+          ${FY_MONTHS.map(m=>{
+            const v=DATA.brandByMonthDetail[m]?.[r.key]||0;
+            return `<td style="text-align:right;${v===0?'opacity:.25':''}">€${v>=1000?(v/1000).toFixed(1)+'k':v||'—'}</td>`;
+          }).join('')}
+          <td style="text-align:right;font-weight:600;border-left:2px solid var(--border)">€${(totByType[r.key]/1000).toFixed(1)}k</td>
+          <td style="text-align:right;opacity:.7">${Math.round(totByType[r.key]/grandTotal*100)}%</td>
+        </tr>`).join('')}
+        <tr style="font-weight:700;border-top:2px solid var(--border)">
+          <td>TOTAL</td>
+          ${totByMonth.map(v=>`<td style="text-align:right">€${(v/1000).toFixed(1)}k</td>`).join('')}
+          <td style="text-align:right;border-left:2px solid var(--border)">€${(grandTotal/1000).toFixed(1)}k</td>
+          <td style="text-align:right;opacity:.7">100%</td>
+        </tr>
+      </tbody>
+    </table>`;
+  }
+
+  new Chart(document.getElementById('chart-brand-detail'), {
+    type: 'bar',
+    data: {
+      labels: FY_LABELS,
+      datasets: [
+        { label:'Search Sin Marca', data:FY_MONTHS.map(m=>DATA.brandByMonthDetail[m]?.nomarca||0), backgroundColor:'#2563eb', borderWidth:0 },
+        { label:'Search Con Marca', data:FY_MONTHS.map(m=>DATA.brandByMonthDetail[m]?.marca||0), backgroundColor:'#16a34a', borderWidth:0 },
+        { label:'PMax', data:FY_MONTHS.map(m=>DATA.brandByMonthDetail[m]?.pmax||0), backgroundColor:'#0891b2', borderWidth:0 },
+        { label:'Demand Gen', data:FY_MONTHS.map(m=>DATA.brandByMonthDetail[m]?.demgen||0), backgroundColor:'#7c3aed', borderWidth:0 },
+        { label:'Vídeo / Alcance', data:FY_MONTHS.map(m=>DATA.brandByMonthDetail[m]?.video||0), backgroundColor:'#d97706', borderWidth:0 },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{position:'bottom',labels:{boxWidth:10,color:tickColor,padding:10}} },
+      scales: {
+        x: { stacked:true, grid:{display:false}, ticks:{color:tickColor,font:{size:10}} },
+        y: { stacked:true, grid:{color:gridColor}, ticks:{color:tickColor, callback:v=>'€'+fmt(v)} }
+      }
+    }
+  });
+}
+
+// ── TAB 4: GSC ───────────────────────────────────────────────────────────
+function buildGsc() {
+  const { gridColor, tickColor } = chartDefaults();
+
+  // All 17 available months (May 2025 – Sep 2026)
+  const GSC_MONTHS = ["202505","202506","202507","202508","202509","202510","202511","202512","202601","202602","202603","202604","202605","202606","202607","202608","202609"];
+  const GSC_LABELS = ["May 25","Jun 25","Jul 25","Ago 25","Sep 25","Oct 25","Nov 25","Dic 25","Ene 26","Feb 26","Mar 26","Abr 26","May 26","Jun 26","Jul 26","Ago 26","Sep 26"];
+
+  const totalClicks = GSC_MONTHS.reduce((s,m)=>s+(DATA.gscByMonth[m]?.clicks||0),0);
+  const peakIdx = GSC_MONTHS.reduce((a,m,i)=>(DATA.gscByMonth[m]?.clicks||0)>(DATA.gscByMonth[GSC_MONTHS[a]]?.clicks||0)?i:a, 0);
+
+  // Per-keyword totals (all period)
+  const kwTotals = {};
+  ['kampaoh','kampao','kampoah','kampaho'].forEach(kw=>{
+    kwTotals[kw] = GSC_MONTHS.reduce((s,m)=>s+(DATA.gscBrandByKeyword[kw]?.[m]||0),0);
+  });
+  const pct = v => Math.round(v/totalClicks*100);
+
+  document.getElementById('tiles-gsc').innerHTML = [
+    ['Clicks de marca total',  fmt(totalClicks),           'May 25–Sep 26','accent'],
+    ['Pico mensual',            fmt(DATA.gscByMonth[GSC_MONTHS[peakIdx]]?.clicks||0), GSC_LABELS[peakIdx],''],
+    ['"kampaoh"',               fmt(kwTotals.kampaoh),      pct(kwTotals.kampaoh)+'% del total marca','blue'],
+    ['CTR medio marca',         '71%',                      'sobre "kampaoh" · pos 1.3',''],
+  ].map(([l,v,s,cls])=>`<div class="tile ${cls}"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${s}</div></div>`).join('');
+
+  const isDark = document.documentElement.dataset.theme==='dark' || (!document.documentElement.dataset.theme && window.matchMedia('(prefers-color-scheme:dark)').matches);
+  const totalColor = isDark ? '#34d399' : '#1b2d1e';
+
+  const gscChart = new Chart(document.getElementById('chart-gsc'), {
+    type: 'line',
+    data: {
+      labels: GSC_LABELS,
+      datasets: [{
+        label: 'Total marca',
+        data: GSC_MONTHS.map(m=>DATA.gscByMonth[m]?.clicks||0),
+        borderColor: totalColor,
+        backgroundColor: isDark ? 'rgba(52,211,153,0.10)' : 'rgba(27,45,30,0.08)',
+        borderWidth: 2.5, pointRadius: 4, fill: true, tension: .35,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'bottom', labels:{ color:tickColor, font:{size:11}, boxWidth:14, padding:14 } },
+        tooltip: { callbacks: { label: ctx => ' '+ctx.dataset.label+': '+fmt(ctx.parsed.y)+' clicks' } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 10 }, maxRotation: 45 } },
+        y: { grid: { color: gridColor }, ticks: { color: tickColor, callback: v => fmt(v) } }
+      }
+    }
+  });
+
+  // Query color palette (for clickable rows)
+  const QUERY_PALETTE = ['#e11d48','#ea580c','#ca8a04','#16a34a','#0891b2','#2563eb','#7c3aed','#db2777','#0d9488','#854d0e'];
+  const activeQueries = {}; // { queryName: { color, datasetIndex } }
+  let paletteIdx = 0;
+
+  // All queries with monthly data (top 30)
+  const allQueryNames = Object.keys(DATA.gscByQueryMonth)
+    .sort((a,b) => {
+      const ta = Object.values(DATA.gscByQueryMonth[a]).reduce((s,v)=>s+v,0);
+      const tb = Object.values(DATA.gscByQueryMonth[b]).reduce((s,v)=>s+v,0);
+      return tb - ta;
+    });
+
+  function toggleQuery(q, tr) {
+    if (activeQueries[q]) {
+      // Remove
+      const { datasetIndex } = activeQueries[q];
+      gscChart.data.datasets.splice(datasetIndex, 1);
+      // Fix indices of remaining active queries
+      Object.keys(activeQueries).forEach(k => {
+        if (activeQueries[k].datasetIndex > datasetIndex) activeQueries[k].datasetIndex--;
+      });
+      delete activeQueries[q];
+      QUERY_PALETTE[paletteIdx > 0 ? --paletteIdx : 0]; // return color (simplified)
+      tr.style.background = '';
+      tr.style.color = '';
+      tr.querySelector('.q-dot')?.remove();
+      gscChart.update();
+    } else {
+      // Add
+      const color = QUERY_PALETTE[paletteIdx % QUERY_PALETTE.length];
+      paletteIdx++;
+      const newDs = {
+        label: q,
+        data: GSC_MONTHS.map(m=>DATA.gscByQueryMonth[q]?.[m]||0),
+        borderColor: color,
+        backgroundColor: 'transparent',
+        borderWidth: 1.8, pointRadius: 3, fill: false, tension: .35,
+        borderDash: [2,2],
+      };
+      gscChart.data.datasets.push(newDs);
+      const dsIdx = gscChart.data.datasets.length - 1;
+      activeQueries[q] = { color, datasetIndex: dsIdx };
+      tr.style.background = color + '18';
+      tr.style.color = 'inherit';
+      const dot = document.createElement('span');
+      dot.className = 'q-dot';
+      dot.style.cssText = `display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px;flex-shrink:0`;
+      tr.querySelector('td').prepend(dot);
+      gscChart.update();
+    }
+  }
+
+  // Build table with all 30 queries (not just topQueries hardcoded list)
+  const tbl = document.getElementById('tbl-queries');
+  const topQMap = Object.fromEntries(DATA.topQueries.map(q=>[q.q, q]));
+  const tableRows = allQueryNames.map(q => {
+    const meta = topQMap[q];
+    const totalClicks90d = meta?.clicks ?? Object.values(DATA.gscByQueryMonth[q]).reduce((s,v)=>s+v,0);
+    const ctr  = meta?.ctr  ?? '—';
+    const pos  = meta?.pos  ?? '—';
+    const displayClicks = meta ? fmt(meta.clicks) : fmt(Object.values(DATA.gscByQueryMonth[q]).reduce((s,v)=>s+v,0));
+    const ctrDisplay = meta ? meta.ctr+'%' : '—';
+    const posDisplay = meta ? meta.pos : '—';
+    return { q, displayClicks, ctrDisplay, posDisplay };
+  });
+
+  tbl.innerHTML = `<thead><tr>
+    <th style="width:36px"></th>
+    <th>Query</th>
+    <th style="text-align:right">Clicks</th>
+    <th style="text-align:right">CTR</th>
+    <th style="text-align:right">Pos.</th>
+  </tr></thead><tbody>${tableRows.map(({q,displayClicks,ctrDisplay,posDisplay})=>`
+    <tr data-query="${q}" style="cursor:pointer;transition:background .15s" title="Pulsa para ver evolución mensual en el gráfico">
+      <td style="padding:8px 6px;text-align:center"><span style="font-size:0.7rem;color:var(--muted)">+</span></td>
+      <td style="padding:8px 6px">${q}</td>
+      <td style="text-align:right;padding:8px 6px">${displayClicks}</td>
+      <td style="text-align:right;padding:8px 6px">${ctrDisplay}</td>
+      <td style="text-align:right;padding:8px 6px">${posDisplay}</td>
+    </tr>`).join('')}</tbody>`;
+
+  // Attach click handlers
+  tbl.querySelectorAll('tbody tr').forEach(tr => {
+    tr.addEventListener('mouseenter', ()=>{ if (!activeQueries[tr.dataset.query]) tr.style.background='var(--surface2)'; });
+    tr.addEventListener('mouseleave', ()=>{ if (!activeQueries[tr.dataset.query]) tr.style.background=''; });
+    tr.addEventListener('click', () => toggleQuery(tr.dataset.query, tr));
+  });
+
+  // Note below table
+  const note = document.createElement('p');
+  note.style.cssText = 'font-size:0.78rem;color:var(--muted);margin-top:8px;padding:0 2px';
+  note.textContent = 'Pulsa cualquier fila para ver su evolución mensual en el gráfico. Clicks = período completo may 25–sep 26. CTR y posición = últimos 90 días de GSC.';
+  tbl.parentElement.appendChild(note);
+}
+
+// ── TAB 5: IA ────────────────────────────────────────────────────────────
+function buildIA() {
+  const { gridColor, tickColor } = chartDefaults();
+  const totSes = Object.values(DATA.iaSources).reduce((s,v)=>s+v.ses,0);
+  const totUsr = Object.values(DATA.iaSources).reduce((s,v)=>s+v.usr,0);
+  const totP   = Object.values(DATA.iaSources).reduce((s,v)=>s+v.p,0);
+  const totR   = Object.values(DATA.iaSources).reduce((s,v)=>s+v.r,0);
+  const convRate = (totP/totSes*100).toFixed(1);
+
+  document.getElementById('tiles-ia').innerHTML = [
+    ['Sesiones IA',       fmt(totSes),   'Abr–Sep 2026','purple'],
+    ['Usuarios únicos',   fmt(totUsr),   'visitantes identificados',''],
+    ['Reservas',          totP,           'tasa conv. '+convRate+'%',''],
+    ['Ingresos atrib.',   eur(totR),      'ticket medio '+eur(totR/totP),''],
+  ].map(([l,v,s,cls])=>`<div class="tile ${cls}"><div class="label">${l}</div><div class="value">${v}</div><div class="sub">${s}</div></div>`).join('');
+
+  // Per-source table
+  const srcOrder = Object.entries(DATA.iaSources).sort((a,b)=>b[1].ses-a[1].ses);
+  document.getElementById('ai-grid').innerHTML = `
+    <div class="tbl-wrap" style="margin-bottom:16px">
+      <table>
+        <thead><tr>
+          <th>Herramienta</th>
+          <th style="text-align:right">Sesiones</th>
+          <th style="text-align:right">Usuarios</th>
+          <th style="text-align:right">Reservas</th>
+          <th style="text-align:right">Ingresos</th>
+          <th style="text-align:right">Conv.</th>
+        </tr></thead>
+        <tbody>${srcOrder.map(([src,v])=>`
+          <tr>
+            <td style="font-weight:500">${src}</td>
+            <td style="text-align:right">${fmt(v.ses)}</td>
+            <td style="text-align:right">${fmt(v.usr)}</td>
+            <td style="text-align:right">${v.p}</td>
+            <td style="text-align:right">${v.r ? eur(v.r) : '—'}</td>
+            <td style="text-align:right">${v.ses>0?(v.p/v.ses*100).toFixed(1)+'%':'—'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  // Monthly chart: sesiones (bars) + reservas (line, right axis)
+  new Chart(document.getElementById('chart-ia'), {
+    type: 'bar',
+    data: {
+      labels: M_LABELS,
+      datasets: [
+        {
+          label: 'Sesiones',
+          data: MONTHS.map(m=>DATA.iaByMonth[m]?.ses||0),
+          backgroundColor: 'rgba(124,58,237,0.65)', borderWidth:0, yAxisID:'y',
+        },
+        {
+          label: 'Usuarios únicos',
+          data: MONTHS.map(m=>DATA.iaByMonth[m]?.usr||0),
+          backgroundColor: 'rgba(124,58,237,0.30)', borderWidth:0, yAxisID:'y',
+        },
+        {
+          label: 'Reservas',
+          type: 'line',
+          data: MONTHS.map(m=>DATA.iaByMonth[m]?.p||0),
+          borderColor: '#16a34a', backgroundColor:'transparent',
+          borderWidth: 2, pointRadius: 5, tension: .3, yAxisID:'y2',
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{ color:tickColor, font:{size:11}, boxWidth:14, padding:14 } }
+      },
+      scales:{
+        x:{ grid:{display:false}, ticks:{color:tickColor} },
+        y:{ grid:{color:gridColor}, ticks:{color:tickColor}, title:{display:true,text:'Sesiones / Usuarios',color:tickColor,font:{size:10}} },
+        y2:{ position:'right', grid:{display:false}, ticks:{color:'#16a34a'}, title:{display:true,text:'Reservas',color:'#16a34a',font:{size:10}} },
+      }
+    }
+  });
+}
+
+// ── Attribution model toggle ──────────────────────────────────────────────
+const atrModelToggle = document.getElementById('atr-model-toggle');
+if (atrModelToggle) {
+  atrModelToggle.addEventListener('click', e => {
+    const btn = e.target.closest('.period-btn');
+    if (!btn) return;
+    const model = btn.dataset.model;
+    if (!model || model === activeAtrModel) return;
+    activeAtrModel = model;
+    atrModelToggle.querySelectorAll('.period-btn').forEach(b => b.classList.toggle('active', b.dataset.model === model));
+    const warn = document.getElementById('atr-lc-warn');
+    if (warn) warn.style.display = model === 'lc' ? 'inline' : 'none';
+    if (built['atribucion']) buildAtribucion();
+  });
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────
+const built = {};
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id==='tab-'+name));
+  if (!built[name]) {
+    built[name] = true;
+    ({trafico:buildTrafico,atribucion:buildAtribucion,marca:buildMarca,gsc:buildGsc,ia:buildIA})[name]?.();
+  }
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Build first tab
+buildTrafico();
+built['trafico'] = true;
+</script>
+
+</body></html>
