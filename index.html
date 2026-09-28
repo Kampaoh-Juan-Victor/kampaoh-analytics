@@ -226,7 +226,7 @@ tr:hover td { background: var(--surface2); }
     <div class="period-toggle" id="atr-model-toggle" style="flex-wrap:wrap;align-items:center">
       <button class="period-btn" data-model="ft">First-Touch <span style="opacity:.7;font-size:.72rem">(primer canal)</span></button>
       <button class="period-btn active" data-model="lc">Last-Click <span style="opacity:.7;font-size:.72rem">(sesión compra)</span></button>
-      <span id="atr-lc-warn" style="font-size:0.78rem;color:var(--muted);margin-left:6px" id="atr-period-note">FT: may–sep 2026 · LC: ago–sep 2026</span>
+      <span id="atr-lc-warn" style="font-size:0.78rem;color:var(--muted);margin-left:6px">Período: ago–27 sep 2026</span>
     </div>
     <div class="two-col">
       <div class="chart-wrap" style="margin:0">
@@ -1011,7 +1011,7 @@ if (atrModelToggle) {
     activeAtrModel = model;
     atrModelToggle.querySelectorAll('.period-btn').forEach(b => b.classList.toggle('active', b.dataset.model === model));
     const warn = document.getElementById('atr-lc-warn');
-    if (warn) warn.style.display = model === 'lc' ? 'inline' : 'none';
+    if (warn) warn.textContent = model === 'lc' ? 'Período: ago–27 sep 2026' : 'Período: may–sep 2026';
     if (built['atribucion']) buildAtribucion();
   });
 }
