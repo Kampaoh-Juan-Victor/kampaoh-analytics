@@ -2,6 +2,51 @@
 <title>Kampaoh Analytics</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
 <style>
+#pw-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0d1a0f;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+#pw-box {
+  background: #162418; border: 1px solid #2a3c2c; border-radius: 12px;
+  padding: 40px 36px; width: 320px; text-align: center;
+}
+#pw-box h2 { color: #e0ebe1; font-size: 1.1rem; margin: 0 0 6px; }
+#pw-box p  { color: #8fa292; font-size: 0.82rem; margin: 0 0 24px; }
+#pw-input {
+  width: 100%; padding: 10px 14px; border-radius: 8px;
+  border: 1px solid #2a3c2c; background: #0d1a0f; color: #e0ebe1;
+  font: inherit; font-size: 1rem; text-align: center;
+  letter-spacing: 4px; outline: none; box-sizing: border-box;
+}
+#pw-input:focus { border-color: #34d399; }
+#pw-error { color: #f87171; font-size: 0.8rem; margin-top: 10px; min-height: 18px; }
+</style>
+<div id="pw-overlay">
+  <div id="pw-box">
+    <h2>Kampaoh · Analítica</h2>
+    <p>Acceso restringido</p>
+    <input id="pw-input" type="password" placeholder="· · · ·" maxlength="10" autofocus />
+    <div id="pw-error"></div>
+  </div>
+</div>
+<script>
+(function() {
+  if (sessionStorage.getItem('ka_auth') === '1') { document.getElementById('pw-overlay').remove(); return; }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    if (this.value === '1806') {
+      sessionStorage.setItem('ka_auth', '1');
+      document.getElementById('pw-overlay').remove();
+    } else {
+      document.getElementById('pw-error').textContent = 'Contraseña incorrecta';
+      this.value = '';
+    }
+  });
+})();
+</script>
+<style>
 :root {
   --bg: #f2f5f1;
   --surface: #ffffff;
